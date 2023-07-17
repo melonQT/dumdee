@@ -15,21 +15,16 @@ def start_command(client, message):
 def kick_command(client, message):
     chat_id = message.chat.id
 
-
-    if client.get_chat_member(chat_id, message.from_user.id).status != "administrator":
+    # Check if the user is an admin
+    admin_status = client.get_chat_member(chat_id, message.from_user.id).status
+    if admin_status not in ("administrator", "creator"):
         message.reply_text("You must be an admin to use this command.")
         return
 
-
-    bot_member = client.get_chat_member(chat_id, client.get_me().id)
-    if bot_member.status != "administrator" or not bot_member.can_restrict_members:
-        message.reply_text("I'm not an admin in this group. Please make me an admin to use this command.")
-        return
-
-
+    # Get the user to be kicked
     user_id = None
 
-
+    # Check if the user is mentioned or if an ID is provided
     if message.reply_to_message:
         user_id = message.reply_to_message.from_user.id
     elif len(message.command) > 1:
@@ -44,6 +39,5 @@ def kick_command(client, message):
         message.reply_text("User has been kicked.")
     except Exception as e:
         message.reply_text(f"Failed to kick user. Error: {str(e)}")
-
 
 app.run()
