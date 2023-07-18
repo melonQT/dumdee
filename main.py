@@ -71,7 +71,7 @@ def kick(client, message):
         return
 
     try:
-        app.kick_chat_member(chat_id, user_id)
+        app.ban_chat_member(chat_id, user_id)
         app.unban_chat_member(chat_id, user_id)
         message.reply("User has been kicked")
     except Exception as e:
