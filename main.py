@@ -11,34 +11,16 @@ app = Client(
 def start_command(client, message):
     message.reply_text("I'm alive!")
 
-@app.on_message(filters.command("kick") & filters.group & filters.user("admins"))
-def kick_command(client, message):
+@app.on_message(filters.command("kick"))
+def kick(client, message):
     chat_id = message.chat.id
-
-    # Check if the user is an admin
-    admin_status = client.get_chat_member(chat_id, message.from_user.id).status
-    if admin_status not in ("administrator", "creator"):
-        message.reply_text("You must be an admin to use this command.")
-        return
-
-    # Get the user to be kicked
-    user_id = None
-
-    # Check if the user is mentioned or if an ID is provided
-    if message.reply_to_message:
-        user_id = message.reply_to_message.from_user.id
-    elif len(message.command) > 1:
-        user_id = message.command[1]
-
-    if user_id is None:
-        message.reply_text("Please reply to the user you want to kick or provide a valid user ID.")
-        return
+    user_id = message.text.split()[1]
 
     try:
-        client.kick_chat_member(chat_id, user_id)
-        message.reply_text("User has been kicked.")
+        app.kick_chat_member(chat_id, user_id)
+        message.reply("User has been kicked")
     except Exception as e:
-        message.reply_text(f"Failed to kick user. Error: {str(e)}")
+        message.reply(f"Could not kick user - {e}")
         print(f"Error: {str(e)}")  # Print the error message for debugging
 
 app.run()
