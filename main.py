@@ -78,4 +78,29 @@ def kick(client, message):
         message.reply(f"Could not kick user - {e}")
         print(f"Error: {str(e)}")  # Print the error message for debugging
 
+@app.on_message(filters.command("matchmake") & filters.group)
+def matchmake_command(client, message):
+    chat_id = message.chat.id
+    user = message.from_user
+
+    # Get a list of group members
+    group_members = app.get_chat_members(chat_id)
+
+    # Filter out the bot and the user who sent the command
+    group_members = [member for member in group_members if not member.user.is_bot and member.user.id != user.id]
+
+    if not group_members:
+        message.reply_text("No eligible users found for matchmaking.")
+        return
+
+    # Randomly select a user
+    random_user = random.choice(group_members).user
+    random_user_first_name = random_user.first_name
+
+    # Generate the matchmaking message
+    reply_text = f"The user {user.first_name} raped {random_user_first_name}!"
+
+    # Reply with the matchmaking message
+    message.reply_text(reply_text)
+
 app.run()
