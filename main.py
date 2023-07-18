@@ -39,5 +39,6 @@ def kick_command(client, message):
         message.reply_text("User has been kicked.")
     except Exception as e:
         message.reply_text(f"Failed to kick user. Error: {str(e)}")
+        print(f"Error: {str(e)}")  # Print the error message for debugging
 
 app.run()
